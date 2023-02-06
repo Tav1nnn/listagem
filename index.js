@@ -17,6 +17,7 @@ server.get('/list/:id', (req,res)=>{
     return res.status(status).json(custumer)
 })
 
+
 server.post('/add', (req, res)=>{
     const {name, site} = req.body
     if(!name || !site){
