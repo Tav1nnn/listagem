@@ -1,7 +1,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up (queryInterface, Sequelize) {
-		return queryInterface.createTable('customers', {
+		return await queryInterface.createTable('customers', {
 			id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
@@ -30,7 +30,7 @@ module.exports = {
 
 	// eslint-disable-next-line no-unused-vars
 	async down (queryInterface, Sequelize) {
-		return queryInterface.createTable('customers');
+		return await queryInterface.dropTable('customers');
 
 	}
 };
