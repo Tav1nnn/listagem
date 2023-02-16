@@ -1,12 +1,14 @@
+
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up (queryInterface, Sequelize) {
-		return await queryInterface.createTable('customers', {
-			id: {
+		return queryInterface.createTable('contacts', {
+			id:{
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				autoIncrement: true,
-				primaryKey: true,
+				primaryKey: true
 			},
 			name: {
 				type: Sequelize.STRING,
@@ -24,13 +26,19 @@ module.exports = {
 			update_at: {
 				type: Sequelize.DATE,
 				allowNull: false,
+			},
+			customer_id: {
+				type: Sequelize.INTEGER,
+				references: {model: 'customers', key: 'id'},
+				onUpdate: 'CASCADE',
+				onDelete: 'CASCADE',
+				allowNull: false,
 			}
 		});
 	},
 
 	// eslint-disable-next-line no-unused-vars
-	async down (queryInterface, Sequelize) {return await queryInterface.dropTable('customers');
-		
-
+	async down (queryInterface, Sequelize) {
+		return await queryInterface.dropTable('contact');
 	}
 };
