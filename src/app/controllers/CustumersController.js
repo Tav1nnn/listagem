@@ -1,89 +1,77 @@
-let customers = [{
-	id: 1,
-	name: 'Otavio',
-	site: 'http://google.com'
-},
-{
-	id: 2,
-	name: 'Pedro',
-	site: 'http://google.com'
-},
-{
-	id: 3,
-	name: 'Malu',
-	site: 'http://google.com'
-}
-];
+import Customer from '../models/Customer';
+import {Op} from 'sequelize';
+import * as Yup from 'yup';
+
 class CustumersController {
 	//listagem de usuarios
-	index(req, res) {
-		return res.json(customers);
+	async index(req, res) {
+	/*	const {
+			name,
+			email,
+			status,
+			createdBefore,
+			createdAfter,
+			updateBefore,
+			updateAfter,
+			sort,
+		} = req.query;
+
+		const page = req.query.page || 1;
+		const limit = req.query.limit || 25;
+
+		let where = {};
+
+		if(name){
+			where = {
+				...where,
+				name:{
+					[Op.iLike]: name,
+				}
+			};
+		}
+		if(email){
+			where = {
+				...where,
+				email:{
+					[Op.iLike]: email,
+				}
+			};
+		}
+		if(status){
+			where = {
+				...where,
+				status:{
+					[Op.in]: status.split(',').map(item => item.toUpperCase()),
+				}
+			};
+		}*/
 	}
 	//Recupera um usuario
 	show(req, res) {
-		const id = parseInt(req.params.id);
-		const custumer = customers.find(item => item.id === id); //procura id igual
-		const status = custumer ? 200 : 404;
-
-		return res.status(status).json(custumer);
+		
 	}
 	//Cria um usario
-	create(req, res) {
-		const {name, site} = req.body;
-        
-		if (!name || !site) {
-			return res.status(400).json({
-				error: 'name ou site nulos'
-			});
+	async create(req, res) {
+		const schema = Yup.object().shape({
+			name: Yup.string().required(),
+			email: Yup.string().email().required(),
+			status: Yup.string().uppercase(),
+		});
+		if(!( await schema.isValid(req.body))){
+			return res.status(400).json({error: 'Error on validate schema'});
 		}
 
-		const id = (customers.length) + 1;
-		console.log(id);
+		const customer = await Customer.create(req.body);
 
-		customers.push({
-			id: id,
-			name: name,
-			site: site
-		});
-
-		return res.status(201).json(customers[id - 1]);
+		return res.status(201).json(customer);
 	}
 	//Atualiza um usuario
 	update(req, res) {
-		const id = parseInt(req.params.id);
-		const {
-			name,
-			site
-		} = req.body;
-
-		//findeIndex traz a posição do array que estiver esse id
-		const index = customers.findIndex(item => item.id === id);
-		const status = index >= 0 ? 200 : 404;
-
-		if (index >= 0) {
-			customers[index] = {
-				id: parseInt(id),
-				name,
-				site
-			};
-			return res.status(status).json(customers[index]);
-		}
-
-		return res.status(status).json({
-			error: 'este id não existe'
-		});
+		
 	}
 	//Exclui um usuario
 	destroy(req, res) {
-		const id = parseInt(req.params.id);
-		const index = customers.findIndex(item => item.id === id);
-		const status = index >= 0 ? 200 : 404;
-
-		if (index >= 0) {
-			customers.splice(index, 1);
-		}
-
-		return res.status(status).json();
+		
 	}
 }
 
