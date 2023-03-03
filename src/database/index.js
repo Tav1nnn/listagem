@@ -5,26 +5,9 @@ import Contact from '../app/models/Contact';
 import User from '../app/models/User';
 
 
-const models = [Customer, Contact, User];
 
-class Database{
-	constructor(){
-		this.connection = new Sequelize(config);
-		this.init();
-		this.associate();
-	}
+const connection = new Sequelize(config);
 
-	init(){
-		models.forEach(model => model.init(this.connection));
-	}
+User.init(connection);
 
-	associate(){
-		models.forEach(model => {
-			if(model.associate){
-				model.associate(this.connection.models);
-			}
-		});
-	}
-}
-
-export default Database;
+export default connection;
